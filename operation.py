@@ -1,45 +1,31 @@
-# %%
 import random
 import json
 
-# %%
 raw_json = {}
 
-# %%
-dict_no = 0
-list_no = 0
-int_no = 0
-str_no = 0
-
-
-# %%
 def loop(data):
-  global dict_no
-  global list_no
-  global int_no
-  global str_no
+  # print("data = ", data, type(data))
+  
+  def inner_loop(innerd):
+    if isinstance(innerd, dict):
+      return loop(innerd)
+    else:
+      if isinstance(innerd, list):
+        new_list_data = []
+        for j in innerd:
+          new_list_data.append(inner_loop(j))
+        return new_list_data
+      elif isinstance(innerd, int):
+        innerd = random.randint(0, 1000)
+        return innerd
+      elif isinstance(innerd, str):
+        innerd = "*"*len(innerd)
+        return innerd
   
   for k in data.keys():
-    if isinstance(data[k], dict):
-      dict_no += 1
-      loop(data[k])
-    else:
-      if isinstance(data[k], list):
-        list_no += 1
-        for j in data[k]:
-          loop(j)
-      elif isinstance(data[k], int):
-        data[k] = random.randint(0, 1000)
-        int_no += 1
-      elif isinstance(data[k], str):
-        data[k] = "*"*len(data[k])
-        str_no += 1
-  
+    data[k] = inner_loop(data[k])
+
   return data
 
-
-# %%
 converted_data = loop(raw_json)
 print(json.dumps(converted_data))
-
-
